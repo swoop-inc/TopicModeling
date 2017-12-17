@@ -17,7 +17,7 @@
 
 package org.apache.spark.mllib.topicModeling
 
-import org.apache.spark.Logging
+import com.blazedb.logging.Logging
 import org.apache.spark.annotation.Experimental
 import org.apache.spark.api.java.JavaPairRDD
 import org.apache.spark.mllib.linalg.Vector

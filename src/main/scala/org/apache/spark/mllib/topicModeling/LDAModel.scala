@@ -166,7 +166,7 @@ class LocalLDAModel private[topicModeling] (
   override def topicsMatrix: Matrix = topics
 
   override def describeTopics(maxTermsPerTopic: Int): Array[(Array[Int], Array[Double])] = {
-    val brzTopics = topics.toBreeze.toDenseMatrix
+    val brzTopics = topics.asBreeze.toDenseMatrix
     Range(0, k).map { topicIndex =>
       val topic = normalize(brzTopics(::, topicIndex), 1.0)
       val (termWeights, terms) =
@@ -204,7 +204,7 @@ class OnlineLDAModel(
   override def topicsMatrix: Matrix = topics
 
   override def describeTopics(maxTermsPerTopic: Int): Array[(Array[Int], Array[Double])] = {
-    val brzTopics = topics.toBreeze.toDenseMatrix
+    val brzTopics = topics.asBreeze.toDenseMatrix
     Range(0, k).map { topicIndex =>
       val topic = normalize(brzTopics(::, topicIndex), 1.0)
       val (termWeights, terms) =
@@ -221,7 +221,7 @@ class OnlineLDAModel(
    */
   def topicDistributions(documents: RDD[(Long, Vector)]): RDD[(Long, Vector)] = {
     val (_, _, gammaArray) = OnlineLDAOptimizer.inference(
-      k, vocabSize, (topics.transpose).toBreeze.toDenseMatrix, alpha, gammaShape, documents)
+      k, vocabSize, (topics.transpose).asBreeze.toDenseMatrix, alpha, gammaShape, documents)
     val result = gammaArray.map(p => {
       (p._1, Vectors.fromBreeze(p._2))
     })

@@ -294,7 +294,7 @@ final class OnlineLDAOptimizer extends LDAOptimizer with Serializable{
 
   def perplexity(docs: RDD[(Long, Vector)]): Double = {
     val alphaVector = Vectors.dense(Array.fill(k)(alpha))
-    val brzAlpha = alphaVector.toBreeze.toDenseVector
+    val brzAlpha = alphaVector.asBreeze.toDenseVector
 
     val Elogbeta = OnlineLDAOptimizer.dirichletExpectation(lambda)
 

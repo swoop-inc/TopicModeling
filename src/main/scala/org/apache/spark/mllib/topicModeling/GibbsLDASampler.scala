@@ -18,14 +18,16 @@ package org.apache.spark.mllib.topicModeling
 
 import java.lang.ref.SoftReference
 import java.util
-import org.apache.spark.Logging
-import org.apache.spark.graphx.impl.GraphImpl
-import org.apache.spark.graphx.{TripletFields, VertexId, Graph}
-import breeze.linalg.{DenseVector => BDV, SparseVector => BSV, Vector => BV, sum => brzSum, StorageVector}
 
+import org.apache.spark.graphx.impl.GraphImpl
+import org.apache.spark.graphx.{Graph, TripletFields, VertexId}
+import breeze.linalg.{StorageVector, DenseVector => BDV, SparseVector => BSV, Vector => BV, sum => brzSum}
 import java.util.Random
+
+import com.blazedb.logging.Logging
 import org.apache.spark.util.random.XORShiftRandom
 import org.apache.spark.util.collection.AppendOnlyMap
+
 import scala.reflect.ClassTag
 
 trait GibbsLDASampler {

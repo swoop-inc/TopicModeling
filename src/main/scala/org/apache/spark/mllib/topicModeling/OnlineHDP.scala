@@ -51,7 +51,7 @@ object OnlineHDPOptimizer extends Serializable {
     //    """
     val column = sum(m(::, *))
 
-    val dig_sum: BDV[Double] = digamma(column.toDenseVector)
+    val dig_sum: BDV[Double] = digamma(column.inner/* toDenseVector*/)
     val ElogW: BDV[Double] = digamma(m(0, ::).inner) - dig_sum
     val Elog1_W: BDV[Double] = digamma(m(1, ::).inner) - dig_sum
     //
@@ -321,7 +321,7 @@ class OnlineHDPOptimizer(
 
       v(0, ::) := sum(phi_all(::, m_K - 1)) + 1.0
       val selected = phi_all(::, 1 until m_K)
-      val t_sum = sum(selected(::, *)).toDenseVector
+      val t_sum = sum(selected(::, *)).inner // toDenseVector
       val phi_cum = flipud(t_sum)
       v(1, ::) := (flipud(accumulate(phi_cum)) + m_alpha).t
       Elogsticks_2nd = OnlineHDPOptimizer.expect_log_sticks(v)
@@ -340,7 +340,7 @@ class OnlineHDPOptimizer(
       // v part/ v in john's notation, john's beta is alpha here
       val log_alpha = log(m_alpha)
       likelihood += (m_K - 1) * log_alpha
-      val dig_sum = (digamma(sum(v(::, *)))).toDenseVector
+      val dig_sum = (digamma(sum(v(::, *)))).inner // .toDenseVector
       val vCopy = v.copy
       for (i <- 0 until v.cols) {
         vCopy(::, i) := BDV[Double](1.0, m_alpha) - vCopy(::, i)
@@ -382,7 +382,7 @@ class OnlineHDPOptimizer(
     // update the suff_stat ss
     // this time it only contains information from one doc
     val sumPhiOut = sum(var_phi_out(::, *))
-    ss.m_var_sticks_ss += sumPhiOut.toDenseVector
+    ss.m_var_sticks_ss += sumPhiOut.inner // .toDenseVector
 
     val phiCopy = phi.copy.t
     for (i <- 0 until phi.rows) {

@@ -23,12 +23,14 @@ import org.apache.hadoop.io.NullWritable
 import org.apache.hadoop.mapred.TextOutputFormat
 import org.apache.spark.graphx._
 import org.apache.spark.graphx.impl.GraphImpl
-import org.apache.spark.{HashPartitioner, Logging, Partitioner}
+import org.apache.spark.{HashPartitioner, Partitioner}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.serializer.KryoRegistrator
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.SparkContext
 import org.apache.hadoop.fs._
+
+import com.blazedb.logging._
 
 import breeze.linalg.{Vector => BV, DenseVector => BDV, SparseVector => BSV, StorageVector,
   sum => brzSum, norm => brzNorm, DenseMatrix => BDM, Matrix => BM, CSCMatrix => BSM}
@@ -56,7 +58,7 @@ class GibbsLDAOptimizer private[topicModeling](
   private var sampler:GibbsLDASampler = new GibbsLDAAliasSampler,
   var edgePartitioner:String = "none",
   var printPerplexity:Boolean = false)
-  extends LDAOptimizer with Serializable with Logging {
+  extends LDAOptimizer with Serializable with com.blazedb.logging.Logging {
 
   def this() = this(0.1f, StorageLevel.MEMORY_AND_DISK)
 
@@ -417,7 +419,7 @@ object GibbsLDAOptimizer {
     assert(docId >= 0)
     val newDocId: DocId = -(docId + 1L)
 
-    doc.toBreeze.activeIterator.filter(_._2 > 0).map {case (termId, counter) =>
+    doc.asBreeze.activeIterator.filter(_._2 > 0).map {case (termId, counter) =>
       val topics = new Array[Int](counter.toInt)
       for (i <- 0 until counter.toInt) {
         topics(i) = gen.nextInt(numTopics)
@@ -822,8 +824,8 @@ private class DBHPartitioner(partitions: Int) extends Partitioner {
 
 private[topicModeling] class LDAKryoRegistrator extends KryoRegistrator {
   def registerClasses(kryo: com.esotericsoftware.kryo.Kryo) {
-    val gkr = new GraphKryoRegistrator
-    gkr.registerClasses(kryo)
+//    val gkr = new GraphKryoRegistrator
+//    gkr.registerClasses(kryo)
 
     kryo.register(classOf[BSV[GibbsLDAOptimizer.Count]])
     kryo.register(classOf[BSV[Double]])
