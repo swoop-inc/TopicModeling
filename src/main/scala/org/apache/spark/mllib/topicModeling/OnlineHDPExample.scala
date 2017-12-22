@@ -17,8 +17,6 @@
 
 package org.apache.spark.mllib.topicModeling
 
-import java.text.BreakIterator
-
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.mllib.linalg.{SparseVector, Vector, Vectors}
 import org.apache.spark.rdd.RDD
@@ -26,7 +24,6 @@ import org.apache.spark.{SparkConf, SparkContext}
 import scopt.OptionParser
 
 import scala.collection.mutable
-import scala.reflect.runtime.universe._
 
 
 /**
@@ -65,11 +62,11 @@ object OnlineHDPExample {
     parseAndRun(args)
   }
 
-  def parseAndRun(args: Array[String]) = {
+  def parseAndRun(args: Array[String], inSc: Option[SparkContext] = None): Seq[LDAMetrics] = {
 
     val parser = getParser(args)
     val results = parser.parse(args, OnlineHDPParams()).map { params=>
-      run(params)
+      run(params, inSc)
     }.getOrElse {
       parser.showUsageAsError
       sys.exit(1)
@@ -83,7 +80,7 @@ object OnlineHDPExample {
     val parser = new OptionParser[OnlineHDPParams]("LDAExample") {
       head("LDAExample: an example LDA app for plain text data.")
       opt[String]("master")
-        .text(s"spark master. default: ${defaultParams.master}")
+        .text(s"spark master ('reuse' if master already started'). default: ${defaultParams.master}")
         .action((x, c) => c.copy(master = x))
       opt[Int]("k")
         .text(s"number of topics. default: ${defaultParams.k}")
@@ -127,11 +124,13 @@ object OnlineHDPExample {
     parser
   }
 
-  def run(params: OnlineHDPParams) {
+  def run(params: OnlineHDPParams, inSc: Option[SparkContext] = None) = {
 
-    val conf = new SparkConf().setAppName(s"LDAExample with $params")
-      .setMaster(params.master)
-    val sc = new SparkContext(conf)
+    val sc = inSc.getOrElse {
+      val conf = new SparkConf().setAppName(s"LDAExample with $params")
+        .setMaster(params.master)
+      new SparkContext(conf)
+    }
 
     val logLevel = Level.toLevel(params.logLevel, Level.INFO)
     Logger.getRootLogger.setLevel(logLevel)
