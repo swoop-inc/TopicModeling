@@ -35,7 +35,7 @@ import scala.collection.mutable
 object OnlineHDPExample {
 
   case class OnlineHDPParams(
-    input: Seq[String] = Seq.empty,
+    input: Seq[String] = Seq.empty[String],
     master: String = "local",
     k: Int = 20,
     vocabSize: Int = 10000,
@@ -58,7 +58,7 @@ object OnlineHDPExample {
 
   }
 
-  def main(args: Array[String]) = {
+  def main(args: Array[String]): Unit =  {
     parseAndRun(args)
   }
 
