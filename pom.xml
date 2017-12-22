@@ -125,6 +125,49 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                  <version>3.3</version>
             </plugin>
+             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Main-Class>org.openchai.tensorflow.TfServer</Main-Class>
+                                        <Build-Number>100.0</Build-Number>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                            <artifactSet>
+                                <!--<excludes>-->
+                                    <!--<exclude>org.apache.spark:*</exclude>-->
+                                <!--</excludes>-->
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>*.*</artifact>
+                                    <excludes>
+                                        <!--<exclude>org.apache.maven:lib:tests</exclude>-->
+                                        <exclude>log4j:log4j:jar:</exclude>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/ECLIPSE*</exclude>
+                                        <exclude>META-INF/license/*</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <minimizeJar>false</minimizeJar>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
