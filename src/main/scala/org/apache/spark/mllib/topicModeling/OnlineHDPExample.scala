@@ -163,7 +163,6 @@ object OnlineHDPExample {
 
     println(s"Finished training ${getClass.getSimpleName}")
     println(s"Results\n${results.mkString(",")}")
-    sc.stop()
     results
   }
 
