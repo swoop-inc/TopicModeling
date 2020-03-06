@@ -78,7 +78,7 @@ object OnlineHDPExample {
     val defaultParams = OnlineHDPParams()
 
     val parser = new OptionParser[OnlineHDPParams]("LDAExample") {
-      head("LDAExample: an example LDA app for plain text data.")
+      head("OnlineHDPExample: an example LDA app for plain text data.")
       opt[String]("master")
         .text(s"spark master ('reuse' if master already started'). default: ${defaultParams.master}")
         .action((x, c) => c.copy(master = x))
@@ -127,7 +127,7 @@ object OnlineHDPExample {
   def run(params: OnlineHDPParams, inSc: Option[SparkContext] = None) = {
 
     val sc = inSc.getOrElse {
-      val conf = new SparkConf().setAppName(s"LDAExample with $params")
+      val conf = new SparkConf().setAppName(s"OnlineHDPExample with $params")
         .setMaster(params.master)
       new SparkContext(conf)
     }
@@ -251,4 +251,3 @@ object OnlineHDPExample {
     (documents, corpusSize, vocabArray, selectedTokenCount)
   }
 }
-
